@@ -42,8 +42,8 @@ void getstep(Plane &plane, float &xstep, float &ystep)
 {
 	int ymax, xmax;
 	getmaxyx(stdscr, ymax, xmax);
-	if (xstep) xstep = (plane.xmax - plane.xmin) / (xmax + 1);
-	if (ystep) ystep = (plane.ymax - plane.ymin) / (ymax + 1);
+	if (xstep) xstep = (plane.xmax - plane.xmin) / (xmax + 1.0f);
+	if (ystep) ystep = (plane.ymax - plane.ymin) / (ymax + 1.0f);
 }
 
 void draw_axes(Plane &plane)

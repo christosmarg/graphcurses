@@ -30,7 +30,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 run:
-	./$(BIN_DIR)/$(TARGET) ${y}
+	./$(BIN_DIR)/$(TARGET)
 	
 clean:
 	$(RM) $(OBJ) $(BIN_DIR)/$(TARGET)
