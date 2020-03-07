@@ -1,12 +1,12 @@
 # graphcurses
 
-**UNDER CONSTRUCTION**
+**UNDER CONSTRUCTION**  
 A simple ncurses graph generator.
 
 ## Dependencies
 
-`ncurses`
-`matheval`
+* `ncurses` 
+* `matheval`
 
 ## To Do
 

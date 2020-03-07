@@ -11,14 +11,14 @@
 
 typedef struct
 {
-	double ymin, ymax;
-	double xmin, xmax;
+	float ymin, ymax;
+	float xmin, xmax;
 } Plane;
 
-typedef double (*YFunc)(double x);
+typedef float (*YFunc)(float x);
 void *eval = nullptr;
-double default_func(double x) {return sin(x);}
-double evalf(double x) {return evaluator_evaluate_x(eval, x);}
+float default_func(float x) {return sin(x);}
+float evalf(float x) {return evaluator_evaluate_x(eval, x);}
 
 void init_curses()
 {
@@ -32,13 +32,13 @@ void init_curses()
 	init_pair(2, COLOR_YELLOW, COLOR_BLACK);
 }
 
-double scale(double val, double omin, double omax, double nmin, double nmax)
+float scale(float val, float omin, float omax, float nmin, float nmax)
 {
-	double s = (val - omin) / (omax - omin);
+	float s = (val - omin) / (omax - omin);
 	return s * (nmax - nmin) + nmin;
 }
 
-void getstep(Plane &plane, double &xstep, double &ystep)
+void getstep(Plane &plane, float &xstep, float &ystep)
 {
 	int ymax, xmax;
 	getmaxyx(stdscr, ymax, xmax);
@@ -50,44 +50,44 @@ void draw_axes(Plane &plane)
 {
 	int ymax, xmax;
 	getmaxyx(stdscr, ymax, xmax);
-	double x0 = scale(0, plane.xmin, plane.xmax, 0, xmax);
-	double y0 = scale(0, plane.ymin, plane.ymax, ymax, 0);
-	double xstep, ystep;
+	float x0 = scale(0, plane.xmin, plane.xmax, 0, xmax);
+	float y0 = scale(0, plane.ymin, plane.ymax, ymax, 0);
+	float xstep, ystep;
 	getstep(plane, xstep, ystep);
 
 	for (int i = 0; i < xmax; i++)
 	{
-		double plotx = plane.xmin + xstep * i;
+		float plotx = plane.xmin + xstep * i;
 		mvwaddch(stdscr, y0, i, ACS_HLINE);
 	}
 
 	for (int i = 0; i < ymax; i++)
 	{
-		double ploty = plane.ymin + ystep * i;
+		float ploty = plane.ymin + ystep * i;
 		mvwaddch(stdscr, i, x0, ACS_VLINE);
 	}
 
 	refresh();
 }
 
-void plot(Plane &plane, double x, double y)
+void plot(Plane &plane, float x, float y)
 {
 	int ymax, xmax;
 	getmaxyx(stdscr, ymax, xmax);
-	double xp = scale(x, plane.xmin, plane.xmax, 0, xmax);
-	double yp = scale(y, plane.ymin, plane.ymax, ymax, 0);
+	float xp = scale(x, plane.xmin, plane.xmax, 0, xmax);
+	float yp = scale(y, plane.ymin, plane.ymax, ymax, 0);
 	mvwaddch(stdscr, yp, xp, '.');
 }
 
 void draw_graph(Plane &plane, YFunc yfunc)
 {
-	double xstep;
-	double ystep;
+	float xstep;
+	float ystep;
 	getstep(plane, xstep, ystep);
 	attron(COLOR_PAIR(2));
-	for (double x = plane.xmin; x <= plane.xmax; x += xstep)
+	for (float x = plane.xmin; x <= plane.xmax; x += xstep)
 	{
-		double y = yfunc(x);
+		float y = yfunc(x);
 		plot(plane, x, y);
 	}
 	attroff(COLOR_PAIR(2));
@@ -98,17 +98,17 @@ void handle_zoom(int key, Plane &plane)
 	// improve
 	if (key == '+')
 	{
-		plane.xmin += 2.0;
-		plane.xmax -= 2.0;
-		plane.ymin += 2.0;
-		plane.ymax -= 2.0;
+		plane.xmin += 1.5f;
+		plane.xmax -= 1.5f;
+		plane.ymin += 1.5f;
+		plane.ymax -= 1.5f;
 	}
 	else if (key == '-')
 	{
-		plane.xmin -= 2.0;
-		plane.xmax += 2.0;
-		plane.ymin -= 2.0;
-		plane.ymax += 2.0;
+		plane.xmin -= 1.5f;
+		plane.xmax += 1.5f;
+		plane.ymin -= 1.5f;
+		plane.ymax += 1.5f;
 	}
 	else if (key == 'r')
 	{
@@ -122,7 +122,7 @@ void handle_zoom(int key, Plane &plane)
 
 void handle_key(int key, Plane &plane)
 {
-	double xshift = 0, yshift = 0;
+	float xshift = 0, yshift = 0;
 
 	switch (key)
 	{
