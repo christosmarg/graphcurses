@@ -3,7 +3,7 @@
 **UNDER CONSTRUCTION**  
 A simple ncurses graph generator.
 
-![Screenshot](https://user-images.githubusercontent.com/54286563/76137975-82b5fd00-604b-11ea-8c34-f1adc98c0224.png)
+![Screenshot_20200307_171133](https://user-images.githubusercontent.com/54286563/76145933-fcbfa380-6096-11ea-8175-db2e0d626f13.png)
 
 ## Dependencies
 
@@ -20,3 +20,5 @@ A simple ncurses graph generator.
 * Add coordinates using cursor pointing
 * *(Perhaps)* add derivative calculator
 * Display expression
+* Fix axes plotting bug
+* Add point numbering on axes

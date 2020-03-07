@@ -1,4 +1,5 @@
 TARGET = graphcurses 
+INSTALL_PATH = /usr/local/bin
 
 SRC_DIR = src
 OBJ_DIR = obj
@@ -31,6 +32,9 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 run:
 	./$(BIN_DIR)/$(TARGET)
+
+install: $(TARGET)
+	cp $(BIN_DIR)/$(TARGET) $(INSTALL_PATH)
 	
 clean:
 	$(RM) $(OBJ) $(BIN_DIR)/$(TARGET)
