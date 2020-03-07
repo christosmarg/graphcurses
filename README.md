@@ -15,3 +15,5 @@ A simple ncurses graph generator.
 * Add slope, curvature etc.
 * Add an options window
 * Add the option to give a function while in the program
+* Add coordinates using cursor pointing
+* *(Perhaps)* add derivative calculator

@@ -4,8 +4,8 @@
 #include <iostream>
 #include <string>
 
-#define XMIN_PLANE -2*M_PI 
-#define XMAX_PLANE 2*M_PI
+#define XMIN_PLANE -2.0f*M_PI 
+#define XMAX_PLANE 2.0f*M_PI
 #define YMIN_PLANE -M_PI
 #define YMAX_PLANE M_PI
 
@@ -50,8 +50,8 @@ void draw_axes(Plane &plane)
 {
 	int ymax, xmax;
 	getmaxyx(stdscr, ymax, xmax);
-	float x0 = scale(0, plane.xmin, plane.xmax, 0, xmax);
-	float y0 = scale(0, plane.ymin, plane.ymax, ymax, 0);
+	float x0 = scale(0.0f, plane.xmin, plane.xmax, 0.0f, xmax);
+	float y0 = scale(0.0f, plane.ymin, plane.ymax, ymax, 0.0f);
 	float xstep, ystep;
 	getstep(plane, xstep, ystep);
 
@@ -74,8 +74,8 @@ void plot(Plane &plane, float x, float y)
 {
 	int ymax, xmax;
 	getmaxyx(stdscr, ymax, xmax);
-	float xp = scale(x, plane.xmin, plane.xmax, 0, xmax);
-	float yp = scale(y, plane.ymin, plane.ymax, ymax, 0);
+	float xp = scale(x, plane.xmin, plane.xmax, 0.0f, xmax);
+	float yp = scale(y, plane.ymin, plane.ymax, ymax, 0.0f);
 	mvwaddch(stdscr, yp, xp, '.');
 }
 
@@ -122,19 +122,19 @@ void handle_zoom(int key, Plane &plane)
 
 void handle_key(int key, Plane &plane)
 {
-	float xshift = 0, yshift = 0;
+	float xshift = 0.0f, yshift = 0.0f;
 
 	switch (key)
 	{
-		case 'k': case KEY_UP:    yshift = 1; break;
-		case 'j': case KEY_DOWN:  yshift = -1; break;
-		case 'h': case KEY_LEFT:  xshift = -1; break;
-		case 'l': case KEY_RIGHT: xshift = 1; break;
+		case 'k': case 'w': case KEY_UP:    yshift = 1; break;
+		case 'j': case 's': case KEY_DOWN:  yshift = -1; break;
+		case 'h': case 'a': case KEY_LEFT:  xshift = -1; break;
+		case 'l': case 'd': case KEY_RIGHT: xshift = 1; break;
 		case '+': case '-': case 'r': handle_zoom(key, plane); break;
 	}
 
-	xshift *= (plane.xmax - plane.xmin) / 16;
-	yshift *= (plane.ymax - plane.ymin) / 16;
+	xshift *= (plane.xmax - plane.xmin) / 16.0f;
+	yshift *= (plane.ymax - plane.ymin) / 16.0f;
 	plane.xmin += xshift;
 	plane.xmax += xshift;
 	plane.ymin += yshift;
@@ -154,7 +154,6 @@ int main(int argc, char **argv)
 
 	if (argc > 1)
 	{
-		if (std::string(argv[1]) == "y=") argv[1] += 2;
 		eval = evaluator_create(argv[1]);
 		if (!eval)
 		{
