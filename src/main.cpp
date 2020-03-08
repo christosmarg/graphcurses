@@ -167,6 +167,10 @@ int main(int argc, char **argv)
 	{
 		erase();
 		attron(COLOR_PAIR(1));
+		attron(A_BOLD);
+		if (argv[1] != nullptr) printw("f(x) = %s", ((std::string)argv[1]).c_str());
+		else printw("f(x) = sin(x)");
+		attroff(A_BOLD);
 		handle_key(key, plane);
 		draw_axes(plane);
 		attroff(COLOR_PAIR(1));
