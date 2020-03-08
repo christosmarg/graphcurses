@@ -1,8 +1,6 @@
 #include <ncurses.h>
 #include <iostream>
-#include <string>
 #include <cmath>
-#include <cassert>
 #include <matheval.h>
 
 #define XMIN_PLANE -2.0f*M_PI 

@@ -3,7 +3,7 @@
 **UNDER CONSTRUCTION**  
 A simple ncurses graph generator.
 
-![Screenshot_20200307_171133](https://user-images.githubusercontent.com/54286563/76145933-fcbfa380-6096-11ea-8175-db2e0d626f13.png)
+![Screenshot_20200308_212613](https://user-images.githubusercontent.com/54286563/76169715-b3994d80-6183-11ea-97e0-4003239ecfe3.png)
 
 ## Dependencies
 
