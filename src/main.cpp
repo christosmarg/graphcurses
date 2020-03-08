@@ -1,8 +1,9 @@
 #include <ncurses.h>
-#include <cmath>
-#include <matheval.h>
 #include <iostream>
 #include <string>
+#include <cmath>
+#include <cassert>
+#include <matheval.h>
 
 #define XMIN_PLANE -2.0f*M_PI 
 #define XMAX_PLANE 2.0f*M_PI
@@ -19,9 +20,9 @@ typedef struct
 } Plane;
 
 typedef float (*YFunc)(float x);
-void *eval = nullptr;
-float default_func(float x) {return sin(x);}
-float evalf(float x) {return evaluator_evaluate_x(eval, x);}
+void *f = nullptr;
+void *fd = nullptr;
+float evalf(float x) {return evaluator_evaluate_x(f, x);}
 
 void init_curses()
 {
@@ -33,6 +34,29 @@ void init_curses()
 	start_color();
 	init_pair(1, COLOR_GREEN, COLOR_BLACK);
 	init_pair(2, COLOR_YELLOW, COLOR_BLACK);
+}
+
+void restore_zoom(Plane &plane)
+{
+	plane.xmin = XMIN_PLANE;
+	plane.xmax = XMAX_PLANE;
+	plane.ymin = YMIN_PLANE;
+	plane.ymax = YMAX_PLANE;
+	plane.xscale = XSCALE_PLANE;
+	plane.yscale = YSCALE_PLANE;
+}
+
+void getfunc(char *buffer, Plane &plane)
+{
+	move(0, 0);
+	clrtoeol();
+	printw("f(x) = ");
+	echo();
+	refresh();
+	getnstr(buffer, 256);
+	restore_zoom(plane);
+	refresh();
+	noecho();
 }
 
 float scale(float val, float omin, float omax, float nmin, float nmax)
@@ -110,16 +134,6 @@ void handle_zoom(Plane &plane, float factor)
 	plane.ymax = scale(factor, 1.0f, 0.0f, plane.ymax, centerY);	
 }
 
-void restore_zoom(Plane &plane)
-{
-	plane.xmin = XMIN_PLANE;
-	plane.xmax = XMAX_PLANE;
-	plane.ymin = YMIN_PLANE;
-	plane.ymax = YMAX_PLANE;
-	plane.xscale = XSCALE_PLANE;
-	plane.yscale = YSCALE_PLANE;
-}
-
 void shift(Plane &plane, float xshift = 0.0f, float yshift = 0.0f)
 {
 	xshift *= (plane.xmax - plane.xmin) / 16.0f;
@@ -130,17 +144,35 @@ void shift(Plane &plane, float xshift = 0.0f, float yshift = 0.0f)
 	plane.ymax += yshift;
 }
 
+void validate_expression(char *buffer, Plane &plane)
+{
+	getfunc(buffer, plane);
+	while (!(f = evaluator_create(buffer)))
+	{
+		printw("Error in expression! Try again");
+		getfunc(buffer, plane);
+		refresh();
+	}
+
+}
+
 void handle_key(int key, Plane &plane)
 {
 	switch (key)
 	{
-		case 'k': case 'w': case KEY_UP:    shift(plane, 0.0f, 1.0f); break;
-		case 'j': case 's': case KEY_DOWN:  shift(plane, 0.0f, -1.0f); break;
-		case 'h': case 'a': case KEY_LEFT:  shift(plane, -1.0f, 0.0f); break;
-		case 'l': case 'd': case KEY_RIGHT:	shift(plane, 1.0f, 0.0f); break;
+		case 'k': case KEY_UP:    shift(plane, 0.0f, 1.0f); break;
+		case 'j': case KEY_DOWN:  shift(plane, 0.0f, -1.0f); break;
+		case 'h': case KEY_LEFT:  shift(plane, -1.0f, 0.0f); break;
+		case 'l': case KEY_RIGHT: shift(plane, 1.0f, 0.0f); break;
 		case '+': handle_zoom(plane, 1.0f/1.05f); break;
 		case '-': handle_zoom(plane, 1.05f); break;
 		case 'r': restore_zoom(plane); break;
+		case 'f': // don't repeat
+		{
+			char *buffer = new char[256];
+			validate_expression(buffer, plane);
+			delete[] buffer;
+		} break;
 	}
 }
 
@@ -148,30 +180,25 @@ int main(int argc, char **argv)
 {
 	Plane plane;
 	restore_zoom(plane);
-	YFunc yfunc = default_func;
 	int key = 0;
 
-	if (argc > 1)
-	{
-		eval = evaluator_create(argv[1]);
-		if (!eval)
-		{
-			std::cout << "Error in expression!" << std::endl;
-			return -1;
-		}
-		yfunc = evalf;
-	}
-
 	init_curses();
+
+	char *buffer = new char[256];
+	validate_expression(buffer, plane);
+	delete[] buffer;
+	YFunc yfunc = evalf;
+	
 	while (key != 'q')
 	{
-		erase();
 		attron(COLOR_PAIR(1));
-		attron(A_BOLD);
-		if (argv[1] != nullptr) printw("f(x) = %s", ((std::string)argv[1]).c_str());
-		else printw("f(x) = sin(x)");
-		attroff(A_BOLD);
 		handle_key(key, plane);
+		erase();
+		attron(A_REVERSE);
+		attron(A_BOLD);
+		mvprintw(0, 0, "f(x) = %s", evaluator_get_string(f));
+		attroff(A_REVERSE);
+		attroff(A_BOLD);
 		draw_axes(plane);
 		attroff(COLOR_PAIR(1));
 
@@ -181,6 +208,7 @@ int main(int argc, char **argv)
 	}
 	
 	endwin();
+	evaluator_destroy(f);	
 
 	return 0;
 }
