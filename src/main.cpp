@@ -1,5 +1,6 @@
 #include <ncurses.h>
 #include <iostream>
+#include <functional>
 #include <cmath>
 #include <matheval.h>
 
@@ -17,7 +18,6 @@ typedef struct
 	float xscale, yscale;
 } Plane;
 
-typedef float (*YFunc)(float x);
 void *f = nullptr;
 void *fd = nullptr;
 float evalf(float x) {return evaluator_evaluate_x(f, x);}
@@ -30,7 +30,7 @@ void init_curses()
 	curs_set(0);
 	keypad(stdscr, true);
 	start_color();
-	init_pair(1, COLOR_GREEN, COLOR_BLACK);
+	init_pair(1, COLOR_WHITE, COLOR_BLACK);
 	init_pair(2, COLOR_YELLOW, COLOR_BLACK);
 }
 
@@ -108,7 +108,7 @@ void plot(Plane &plane, float x, float y)
 	mvwaddch(stdscr, yp, xp, '.');
 }
 
-void draw_graph(Plane &plane, YFunc yfunc)
+void draw_graph(Plane &plane, const std::function<float(float)>& yfunc)
 {
 	float xstep;
 	float ystep;
@@ -185,7 +185,7 @@ int main(int argc, char **argv)
 	char *buffer = new char[256];
 	validate_expression(buffer, plane);
 	delete[] buffer;
-	YFunc yfunc = evalf;
+	std::function<float(float)> yfunc = evalf;
 	
 	while (key != 'q')
 	{
