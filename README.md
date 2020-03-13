@@ -19,3 +19,4 @@ A simple ncurses graph generator.
 * *(Perhaps)* add derivative calculator
 * Fix axes plotting bug
 * Add point numbering on axes
+* Fix function disappearing when pressing 'f'

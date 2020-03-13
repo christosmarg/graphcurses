@@ -142,8 +142,9 @@ void shift(Plane &plane, float xshift = 0.0f, float yshift = 0.0f)
 	plane.ymax += yshift;
 }
 
-void validate_expression(char *buffer, Plane &plane)
+void validate_expression(Plane &plane)
 {
+	char *buffer = new char[256];
 	getfunc(buffer, plane);
 	while (!(f = evaluator_create(buffer)))
 	{
@@ -151,7 +152,7 @@ void validate_expression(char *buffer, Plane &plane)
 		getfunc(buffer, plane);
 		refresh();
 	}
-
+	delete[] buffer;
 }
 
 void handle_key(int key, Plane &plane)
@@ -165,12 +166,7 @@ void handle_key(int key, Plane &plane)
 		case '+': handle_zoom(plane, 1.0f/1.05f); break;
 		case '-': handle_zoom(plane, 1.05f); break;
 		case 'r': restore_zoom(plane); break;
-		case 'f': // don't repeat
-		{
-			char *buffer = new char[256];
-			validate_expression(buffer, plane);
-			delete[] buffer;
-		} break;
+		case 'f': validate_expression(plane); break;
 	}
 }
 
@@ -178,14 +174,10 @@ int main(int argc, char **argv)
 {
 	Plane plane;
 	restore_zoom(plane);
-	int key = 0;
-
 	init_curses();
-
-	char *buffer = new char[256];
-	validate_expression(buffer, plane);
-	delete[] buffer;
+	validate_expression(plane);
 	std::function<float(float)> yfunc = evalf;
+	int key = 0;
 	
 	while (key != 'q')
 	{
