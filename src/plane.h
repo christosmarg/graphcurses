@@ -1,11 +1,11 @@
 #ifndef PLANE_H
 #define PLANE_H
 
-#include <ncurses.h>
-#include <iostream>
-#include <functional>
 #include <cmath>
+#include <functional>
+#include <iostream>
 #include <matheval.h>
+#include <ncurses.h>
 
 #define XMIN_PLANE -2.0f*M_PI 
 #define XMAX_PLANE 2.0f*M_PI
@@ -23,9 +23,7 @@ class Plane
 		int ymaxs, xmaxs;
 
 	public:
-		Plane()
-			:ymin(YMIN_PLANE), ymax(YMAX_PLANE), xmin(XMIN_PLANE), xmax(XMAX_PLANE),
-			xscale(XSCALE_PLANE), yscale(YSCALE_PLANE), ymaxs(getmaxy(stdscr)), xmaxs(getmaxx(stdscr)) {}
+		Plane();
 
 		void restore_zoom();
 		void draw_axes();

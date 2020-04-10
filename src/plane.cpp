@@ -1,5 +1,9 @@
 #include "plane.h"
 
+Plane::Plane()
+	:ymin(YMIN_PLANE), ymax(YMAX_PLANE), xmin(XMIN_PLANE), xmax(XMAX_PLANE),
+	xscale(XSCALE_PLANE), yscale(YSCALE_PLANE), ymaxs(getmaxy(stdscr)), xmaxs(getmaxx(stdscr)) {}
+
 void Plane::restore_zoom()
 {
 	xmin = XMIN_PLANE;
