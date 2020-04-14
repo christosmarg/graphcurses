@@ -7,12 +7,12 @@
 #include <matheval.h>
 #include <ncurses.h>
 
-#define XMIN_PLANE		-2.0f*M_PI 
-#define XMAX_PLANE		 2.0f*M_PI
-#define YMIN_PLANE		-M_PI
-#define YMAX_PLANE		 M_PI
-#define XSCALE_PLANE	 1.0f
-#define YSCALE_PLANE	 1.0f
+constexpr float XMIN_PLANE =	-2.0f*M_PI;
+constexpr float XMAX_PLANE =	 2.0f*M_PI;
+constexpr float YMIN_PLANE =	-M_PI;
+constexpr float YMAX_PLANE =	 M_PI;
+constexpr float XSCALE_PLANE =	 1.0f;
+constexpr float YSCALE_PLANE =	 1.0f;
 
 class Plane
 {
