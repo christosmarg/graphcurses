@@ -1,6 +1,5 @@
 # graphcurses
 
-**UNDER CONSTRUCTION**  
 A simple ncurses graph generator.
 
 ![Screenshot_20200308_212613](https://user-images.githubusercontent.com/54286563/76169715-b3994d80-6183-11ea-97e0-4003239ecfe3.png)
