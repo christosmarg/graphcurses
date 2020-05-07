@@ -1,8 +1,6 @@
 #include "plane.h"
 
 static void *f = nullptr;
-static void *df = nullptr;
-static float evalf(float x) {return evaluator_evaluate_x(f, x);}
 
 static void init_curses();
 static void getfunc(char *buffer, Plane& plane);
@@ -15,7 +13,8 @@ int main(int argc, char **argv)
 	Plane plane;
 	plane.restore_zoom();
 	validate_expression(plane);
-	std::function<float(float)> yfunc = evalf;
+	std::function<float(float)> yfunc =
+		[](float x){return evaluator_evaluate_x(f, x);};
 	int key = 0;
 	
 	while (key != 'q')

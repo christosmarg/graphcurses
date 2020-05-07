@@ -2,7 +2,8 @@
 
 Plane::Plane()
 	:ymin(YMIN_PLANE), ymax(YMAX_PLANE), xmin(XMIN_PLANE), xmax(XMAX_PLANE),
-	xscale(XSCALE_PLANE), yscale(YSCALE_PLANE), ymaxs(getmaxy(stdscr)), xmaxs(getmaxx(stdscr)) {}
+	xscale(XSCALE_PLANE), yscale(YSCALE_PLANE), ymaxs(getmaxy(stdscr)),
+	xmaxs(getmaxx(stdscr)) {}
 
 void Plane::restore_zoom()
 {
@@ -26,7 +27,6 @@ void Plane::draw_axes()
 		float plotx = xmin + xstep * i;
 		int tick = fabs(fmod(plotx, xscale)) < xstep;
 		mvaddch(y0, i, tick ? ACS_PLUS : ACS_HLINE);
-		// add numbering
 	}
 
 	for (int i = 0; i < ymaxs; i++)
@@ -34,7 +34,6 @@ void Plane::draw_axes()
 		float ploty = ymin + ystep * i;
 		int tick = fabs(fmod(ploty, yscale)) < ystep;
 		mvaddch(i, x0, tick ? ACS_PLUS : ACS_VLINE);
-		// add numbering
 	}
 }
 
