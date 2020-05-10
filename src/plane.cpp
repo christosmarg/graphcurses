@@ -5,7 +5,8 @@ Plane::Plane()
 	xscale(XSCALE_PLANE), yscale(YSCALE_PLANE), ymaxs(getmaxy(stdscr)),
 	xmaxs(getmaxx(stdscr)) {}
 
-void Plane::restore_zoom()
+void
+Plane::restore_zoom()
 {
 	xmin = XMIN_PLANE;
 	xmax = XMAX_PLANE;
@@ -15,7 +16,8 @@ void Plane::restore_zoom()
 	yscale = YSCALE_PLANE;
 }
 
-void Plane::draw_axes()
+void
+Plane::draw_axes()
 {
 	float x0 = scale(0.0f, xmin, xmax, 0.0f, xmaxs);
 	float y0 = scale(0.0f, ymin, ymax, ymaxs, 0.0f);
@@ -37,7 +39,8 @@ void Plane::draw_axes()
 	}
 }
 
-void Plane::draw_graph(const std::function<float(float)>& yfunc)
+void
+Plane::draw_graph(const std::function<float(float)>& yfunc)
 {
 	float xstep;
 	float ystep;
@@ -51,19 +54,22 @@ void Plane::draw_graph(const std::function<float(float)>& yfunc)
 	attroff(COLOR_PAIR(2));
 }
 
-float Plane::scale(float val, float omin, float omax, float nmin, float nmax)
+float
+Plane::scale(float val, float omin, float omax, float nmin, float nmax)
 {
 	float s = (val - omin) / (omax - omin);
 	return s * (nmax - nmin) + nmin;
 }
 
-void Plane::getstep(float &xstep, float &ystep)
+void
+Plane::getstep(float &xstep, float &ystep)
 {
 	if (xstep) xstep = (xmax - xmin) / (xmaxs + 1.0f);
 	if (ystep) ystep = (ymax - ymin) / (ymaxs + 1.0f);
 }
 
-void Plane::plot(float x, float y)
+void
+Plane::plot(float x, float y)
 {
 	float xp = scale(x, xmin, xmax, 0.0f, xmaxs);
 	float yp = scale(y, ymin, ymax, ymaxs, 0.0f);
@@ -71,7 +77,8 @@ void Plane::plot(float x, float y)
 }
 
 
-void Plane::handle_zoom(float factor)
+void
+Plane::handle_zoom(float factor)
 {
 	float centerX = (xmin + ymax) / 2.0f;
 	float centerY = (ymin + ymax) / 2.0f;
@@ -81,7 +88,8 @@ void Plane::handle_zoom(float factor)
 	ymax = scale(factor, 1.0f, 0.0f, ymax, centerY);	
 }
 
-void Plane::shift(float xshift, float yshift)
+void
+Plane::shift(float xshift, float yshift)
 {
 	xshift *= (xmax - xmin) / 16.0f;
 	yshift *= (ymax - ymin) / 16.0f;

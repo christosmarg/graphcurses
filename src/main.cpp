@@ -7,7 +7,8 @@ static void getfunc(char *buffer, Plane& plane);
 static void validate_expression(Plane& plane);
 static void handle_key(int key, Plane& plane);
 
-int main(int argc, char **argv)
+int
+main(int argc, char **argv)
 {
 	init_curses();
 	Plane plane;
@@ -41,7 +42,8 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-static void init_curses()
+static void
+init_curses()
 {
 	initscr();
 	cbreak();
@@ -53,7 +55,8 @@ static void init_curses()
 	init_pair(2, COLOR_YELLOW, COLOR_BLACK);
 }
 
-static void getfunc(char *buffer, Plane& plane)
+static void
+getfunc(char *buffer, Plane& plane)
 {
 	move(0, 0);
 	clrtoeol();
@@ -66,7 +69,8 @@ static void getfunc(char *buffer, Plane& plane)
 	noecho();
 }
 
-static void validate_expression(Plane& plane)
+static void
+validate_expression(Plane& plane)
 {
 	char *buffer = new char[256];
 	getfunc(buffer, plane);
@@ -79,7 +83,8 @@ static void validate_expression(Plane& plane)
 	delete[] buffer;
 }
 
-static void handle_key(int key, Plane& plane)
+static void
+handle_key(int key, Plane& plane)
 {
 	switch (key)
 	{
