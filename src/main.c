@@ -2,7 +2,7 @@
 
 static void *f = NULL;
 
-static void init_curses();
+static void init_curses(void);
 static void getfunc(Plane *p, char *buf);
 static void validate_expression(Plane *p);
 static float eval(float x);
@@ -38,13 +38,13 @@ main(int argc, char **argv)
 	}
 	
 	endwin();
-	/*evaluator_destroy(f);	*/
+	evaluator_destroy(f);	
 
 	return 0;
 }
 
 static void
-init_curses()
+init_curses(void)
 {
 	initscr();
 	cbreak();

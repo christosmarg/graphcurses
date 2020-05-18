@@ -26,11 +26,11 @@ extern Plane p;
 
 void plane_init(Plane *p);
 void restore_zoom(Plane *p);
-void draw_axes(Plane *p);
-void draw_graph(Plane *p);
+void draw_axes(const Plane *p);
+void draw_graph(const Plane *p);
 float scale(float val, float omin, float omax, float nmin, float nmax);
-void getstep(Plane *p, float *xstep, float *ystep);
-void plot(Plane *p, float x, float y);
+void getstep(const Plane *p, float *xstep, float *ystep);
+void plot(const Plane *p, float x, float y);
 void handle_zoom(Plane *p, float factor);
 void shift(Plane *p, float xshift, float yshift);
 

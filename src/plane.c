@@ -25,7 +25,7 @@ restore_zoom(Plane *p)
 }
 
 void
-draw_axes(Plane *p)
+draw_axes(const Plane *p)
 {
 	int i;
 	float x0 = scale(0.0f, p->xmin, p->xmax, 0.0f, p->xmaxs);
@@ -48,7 +48,7 @@ draw_axes(Plane *p)
 }
 
 void
-draw_graph(Plane *p)
+draw_graph(const Plane *p)
 {
 	float x;
 	float xstep;
@@ -71,14 +71,14 @@ scale(float val, float omin, float omax, float nmin, float nmax)
 }
 
 void
-getstep(Plane *p, float *xstep, float *ystep)
+getstep(const Plane *p, float *xstep, float *ystep)
 {
 	if (*xstep) *xstep = (p->xmax - p->xmin) / (p->xmaxs + 1.0f);
 	if (*ystep) *ystep = (p->ymax - p->ymin) / (p->ymaxs + 1.0f);
 }
 
 void
-plot(Plane *p, float x, float y)
+plot(const Plane *p, float x, float y)
 {
 	float xp = scale(x, p->xmin, p->xmax, 0.0f, p->xmaxs);
 	float yp = scale(y, p->ymin, p->ymax, p->ymaxs, 0.0f);
