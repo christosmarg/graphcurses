@@ -5,13 +5,13 @@ SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
 
-SRC = $(wildcard $(SRC_DIR)/*.cpp)
-OBJ = $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+SRC = $(wildcard $(SRC_DIR)/*.c)
+OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 MOVE = mv
 MKDIR_P = mkdir -p
 
-CC = g++
+CC = gcc
 CPPFLAGS += -Iinclude
 CFLAGS += -Wall
 LDFLAGS += -Llib
@@ -26,7 +26,7 @@ $(TARGET): $(OBJ)
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 	$(MOVE) $(TARGET) $(BIN_DIR)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(MKDIR_P) $(OBJ_DIR)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 

@@ -1,38 +1,37 @@
 #ifndef PLANE_H
 #define PLANE_H
 
-#include <cmath>
-#include <functional>
-#include <iostream>
+#include <math.h>
 #include <matheval.h>
 #include <ncurses.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-class Plane
-{
-	private:
-		const float XMIN_PLANE =	-2.0f*M_PI;
-		const float XMAX_PLANE =	 2.0f*M_PI;
-		const float YMIN_PLANE =	-M_PI;
-		const float YMAX_PLANE =	 M_PI;
-		const float XSCALE_PLANE =	 1.0f;
-		const float YSCALE_PLANE =	 1.0f;
+#define XMIN_PLANE		-2.0f*M_PI;
+#define XMAX_PLANE		 2.0f*M_PI;
+#define YMIN_PLANE		-M_PI;
+#define YMAX_PLANE		 M_PI;
+#define XSCALE_PLANE	 1.0f;
+#define YSCALE_PLANE	 1.0f;
 
-		float ymin, ymax;
-		float xmin, xmax;
-		float xscale, yscale;
-		int ymaxs, xmaxs;
+typedef struct {
+	float (*yfunc)(float x);
+	float ymin, ymax;
+	float xmin, xmax;
+	float xscale, yscale;
+	int ymaxs, xmaxs;
+} Plane;
 
-	public:
-		Plane();
+extern Plane p;
 
-		void restore_zoom();
-		void draw_axes();
-		void draw_graph(const std::function<float(float)>& yfunc);
-		float scale(float val, float omin, float omax, float nmin, float nmax);
-		void getstep(float &xstep, float &ystep);
-		void plot(float x, float y);
-		void handle_zoom(float factor);
-		void shift(float xshift = 0.0f, float yshift = 0.0f);
-};
+void plane_init(Plane *p);
+void restore_zoom(Plane *p);
+void draw_axes(Plane *p);
+void draw_graph(Plane *p);
+float scale(float val, float omin, float omax, float nmin, float nmax);
+void getstep(Plane *p, float *xstep, float *ystep);
+void plot(Plane *p, float x, float y);
+void handle_zoom(Plane *p, float factor);
+void shift(Plane *p, float xshift, float yshift);
 
 #endif /* PLANE_H */
