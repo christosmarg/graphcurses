@@ -12,10 +12,10 @@ MOVE = mv
 MKDIR_P = mkdir -p
 
 CC = gcc
-CPPFLAGS += -Iinclude
-CFLAGS += -Wall
+CPPFLAGS += -Iinclude -pedantic -U__STRICT_ANSI__
+CFLAGS += -Wall -std=c99
 LDFLAGS += -Llib
-LDLIBS += -lncurses -lm -lmatheval
+LDLIBS += -lm -lmatheval -lncurses
 
 .PHONY: all clean
 
