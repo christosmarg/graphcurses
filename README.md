@@ -9,6 +9,22 @@ A simple ncurses graph generator.
 * `ncurses` 
 * `matheval`
 
+## Usage
+
+```shell
+$ cd path/to/graphcurses
+$ make
+$ make run
+```
+In order to install do
+```shell
+$ cd path/to/graphcurses
+$ make
+$ sudo make install
+$ make clean # optional
+```
+The binary will be installed at `/usr/local/bin/`
+
 ## To Do
 
 * Improve key handling

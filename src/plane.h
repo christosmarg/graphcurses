@@ -7,19 +7,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define XMIN_PLANE		-2.0f*M_PI;
-#define XMAX_PLANE		 2.0f*M_PI;
-#define YMIN_PLANE		-M_PI;
-#define YMAX_PLANE		 M_PI;
-#define XSCALE_PLANE	 1.0f;
-#define YSCALE_PLANE	 1.0f;
+#define XMIN_PLANE      -2.0f*M_PI;
+#define XMAX_PLANE       2.0f*M_PI;
+#define YMIN_PLANE      -M_PI;
+#define YMAX_PLANE       M_PI;
+#define XSCALE_PLANE     1.0f;
+#define YSCALE_PLANE     1.0f;
 
 typedef struct {
-	float (*yfunc)(float x);
-	float ymin, ymax;
-	float xmin, xmax;
-	float xscale, yscale;
-	int ymaxs, xmaxs;
+    float (*yfunc)(float x);
+    float ymin, ymax;
+    float xmin, xmax;
+    float xscale, yscale;
+    int ymaxs, xmaxs;
 } Plane;
 
 extern Plane p;
