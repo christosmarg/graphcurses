@@ -50,9 +50,7 @@ draw_axes(const Plane *p)
 void
 draw_graph(const Plane *p)
 {
-    float x;
-    float xstep;
-    float ystep;
+    float x, xstep, ystep;
     getstep(p, &xstep, &ystep);
     attron(COLOR_PAIR(2));
     for (x = p->xmin; x <= p->xmax; x += xstep)
@@ -73,8 +71,8 @@ scale(float val, float omin, float omax, float nmin, float nmax)
 void
 getstep(const Plane *p, float *xstep, float *ystep)
 {
-    if (*xstep) *xstep = (p->xmax - p->xmin) / (p->xmaxs + 1.0f);
-    if (*ystep) *ystep = (p->ymax - p->ymin) / (p->ymaxs + 1.0f);
+    *xstep = (p->xmax - p->xmin) / (p->xmaxs + 1.0f);
+    *ystep = (p->ymax - p->ymin) / (p->ymaxs + 1.0f);
 }
 
 void
@@ -89,12 +87,12 @@ plot(const Plane *p, float x, float y)
 void
 handle_zoom(Plane *p, float factor)
 {
-    float centerX = (p->xmin + p->ymax) / 2.0f;
-    float centerY = (p->ymin + p->ymax) / 2.0f;
-    p->xmin = scale(factor, 1.0f, 0.0f, p->xmin, centerX);
-    p->xmax = scale(factor, 1.0f, 0.0f, p->xmax, centerX);
-    p->ymin = scale(factor, 1.0f, 0.0f, p->ymin, centerY);
-    p->ymax = scale(factor, 1.0f, 0.0f, p->ymax, centerY);  
+    float xctr = (p->xmin + p->ymax) / 2.0f;
+    float yctr = (p->ymin + p->ymax) / 2.0f;
+    p->xmin = scale(factor, 1.0f, 0.0f, p->xmin, xctr);
+    p->xmax = scale(factor, 1.0f, 0.0f, p->xmax, xctr);
+    p->ymin = scale(factor, 1.0f, 0.0f, p->ymin, yctr);
+    p->ymax = scale(factor, 1.0f, 0.0f, p->ymax, yctr);  
 }
 
 void

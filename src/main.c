@@ -1,5 +1,7 @@
 #include "plane.h"
 
+#define BUFFSIZE 256
+
 static void *f = NULL;
 
 static void init_curses(void);
@@ -17,8 +19,8 @@ main(int argc, char **argv)
     restore_zoom(&p);
     validate_expression(&p);
     p.yfunc = eval;
-    int key = 0;
 
+    int key = 0;
     while (key != 'q')
     {
         attron(COLOR_PAIR(1));
@@ -31,7 +33,6 @@ main(int argc, char **argv)
         attroff(A_BOLD);
         draw_axes(&p);
         attroff(COLOR_PAIR(1));
-
         draw_graph(&p);
         refresh();
         key = getch();
@@ -39,11 +40,10 @@ main(int argc, char **argv)
     
     endwin();
     evaluator_destroy(f);   
-
-    return 0;
+    return EXIT_SUCCESS;
 }
 
-static void
+void
 init_curses(void)
 {
     initscr();
@@ -56,7 +56,7 @@ init_curses(void)
     init_pair(2, COLOR_YELLOW, COLOR_BLACK);
 }
 
-static void
+void
 getfunc(Plane *p, char *buf)
 {
     move(0, 0);
@@ -64,16 +64,16 @@ getfunc(Plane *p, char *buf)
     printw("f(x) = ");
     echo();
     refresh();
-    getnstr(buf, 256);
+    getnstr(buf, BUFFSIZE);
     restore_zoom(p);
     refresh();
     noecho();
 }
 
-static void
+void
 validate_expression(Plane *p)
 {
-    char *buf = (char *)malloc(256 + sizeof(char));
+    char *buf = (char *)malloc(BUFFSIZE + sizeof(char));
     getfunc(p, buf);
     while (!(f = evaluator_create(buf)))
     {
@@ -84,13 +84,13 @@ validate_expression(Plane *p)
     free(buf);
 }
 
-static float
+float
 eval(float x)
 {
     return evaluator_evaluate_x(f, x);
 }
 
-static void
+void
 handle_key(Plane *p, int key)
 {
     switch (key)
