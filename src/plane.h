@@ -24,14 +24,14 @@ typedef struct {
 
 extern Plane p;
 
-void plane_init(Plane *p);
-void restore_zoom(Plane *p);
-void draw_axes(const Plane *p);
-void draw_graph(const Plane *p);
-float scale(float val, float omin, float omax, float nmin, float nmax);
-void getstep(const Plane *p, float *xstep, float *ystep);
-void plot(const Plane *p, float x, float y);
-void handle_zoom(Plane *p, float factor);
-void shift(Plane *p, float xshift, float yshift);
+void   plane_init(Plane *p);
+float  plane_scale(float val, float omin, float omax, float nmin, float nmax);
+void   plane_shift(Plane *p, float xshift, float yshift);
+void   zoom_restore(Plane *p);
+void   zoom_handle(Plane *p, float factor);
+void   get_step(const Plane *p, float *xstep, float *ystep);
+void   axes_draw(const Plane *p);
+void   graph_draw(const Plane *p);
+void   graph_plot(const Plane *p, float x, float y);
 
 #endif /* PLANE_H */
