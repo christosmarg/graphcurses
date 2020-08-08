@@ -2,13 +2,13 @@
 
 #define BUFFSIZE 256
 
-static void   *f = NULL;
+static void  *f = NULL;
 
-static void   curses_init(void);
-static void   func_get(Plane *p, char *buf);
-static void   expression_validate(Plane *p);
-static float  expression_evaluate(float x);
-static void   keys_handle(Plane *p, int key);
+static void  curses_init(void);
+static void  func_get(Plane *p, char *buf);
+static void  expression_validate(Plane *p);
+static float expression_evaluate(float x);
+static void  keys_handle(Plane *p, int key);
 
 int
 main(int argc, char **argv)
@@ -95,12 +95,12 @@ keys_handle(Plane *p, int key)
 {
     switch (key)
     {
-        case 'k': case KEY_UP:    plane_shift(p, 0.0f, 1.0f); break;
-        case 'j': case KEY_DOWN:  plane_shift(p, 0.0f, -1.0f); break;
-        case 'h': case KEY_LEFT:  plane_shift(p, -1.0f, 0.0f); break;
-        case 'l': case KEY_RIGHT: plane_shift(p, 1.0f, 0.0f); break;
-        case '+': zoom_handle(p, 1.0f/1.05f); break;
-        case '-': zoom_handle(p, 1.05f); break;
+        case 'k': case KEY_UP:    plane_shift(p, 0.0f,  SHIFT_STEP); break;
+        case 'j': case KEY_DOWN:  plane_shift(p, 0.0f, -SHIFT_STEP); break;
+        case 'h': case KEY_LEFT:  plane_shift(p, -SHIFT_STEP, 0.0f); break;
+        case 'l': case KEY_RIGHT: plane_shift(p,  SHIFT_STEP, 0.0f); break;
+        case '+': zoom_handle(p, ZOOM_IN_FACTOR);  break;
+        case '-': zoom_handle(p, ZOOM_OUT_FACTOR); break;
         case 'r': zoom_restore(p); break;
         case 'f': expression_validate(p); break;
     }
