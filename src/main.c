@@ -13,6 +13,10 @@ static void  keys_handle(Plane *p, int key);
 int
 main(int argc, char **argv)
 {
+#ifndef NCURSES_VERSION
+    fprintf(stderr, "ncurses is needed in order to run this program.\n");
+    return EXIT_FAILURE;
+#endif /* NCURSES_VERSION */
     curses_init();
     Plane p;
     plane_init(&p);
