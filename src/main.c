@@ -5,10 +5,10 @@
 static void  *f = NULL;
 
 static void  curses_init(void);
-static void  func_get(Plane *p, char *buf);
-static void  expression_validate(Plane *p);
+static void  func_get(struct Plane *p, char *buf);
+static void  expression_validate(struct Plane *p);
 static float expression_evaluate(float x);
-static void  keys_handle(Plane *p, int key);
+static void  keys_handle(struct Plane *p, int key);
 
 int
 main(int argc, char **argv)
@@ -18,7 +18,7 @@ main(int argc, char **argv)
     return EXIT_FAILURE;
 #endif /* NCURSES_VERSION */
     curses_init();
-    Plane p;
+    struct Plane p;
     plane_init(&p);
     zoom_restore(&p);
     expression_validate(&p);
@@ -61,7 +61,7 @@ curses_init(void)
 }
 
 void
-func_get(Plane *p, char *buf)
+func_get(struct Plane *p, char *buf)
 {
     move(0, 0);
     clrtoeol();
@@ -75,7 +75,7 @@ func_get(Plane *p, char *buf)
 }
 
 void
-expression_validate(Plane *p)
+expression_validate(struct Plane *p)
 {
     char *buf = (char *)malloc(BUFFSIZE + sizeof(char));
     func_get(p, buf);
@@ -95,7 +95,7 @@ expression_evaluate(float x)
 }
 
 void
-keys_handle(Plane *p, int key)
+keys_handle(struct Plane *p, int key)
 {
     switch (key)
     {

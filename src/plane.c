@@ -1,7 +1,12 @@
 #include "plane.h"
 
+static float plane_scale(float val, float omin, float omax,
+                         float nmin, float nmax);
+static void  get_step(const struct Plane *p, float *xstep, float *ystep);
+static void  graph_plot(const struct Plane *p, float x, float y);
+
 void
-plane_init(Plane *p)
+plane_init(struct Plane *p)
 {
     p->xmin   = XMIN_PLANE;
     p->xmax   = XMAX_PLANE;
@@ -14,7 +19,7 @@ plane_init(Plane *p)
 }
 
 void
-plane_shift(Plane *p, float xshift, float yshift)
+plane_shift(struct Plane *p, float xshift, float yshift)
 {
     xshift  *= (p->xmax - p->xmin) / 16.0f;
     yshift  *= (p->ymax - p->ymin) / 16.0f;
@@ -32,7 +37,7 @@ plane_scale(float val, float omin, float omax, float nmin, float nmax)
 }
 
 void
-zoom_restore(Plane *p)
+zoom_restore(struct Plane *p)
 {
     p->xmin   = XMIN_PLANE;
     p->xmax   = XMAX_PLANE;
@@ -43,7 +48,7 @@ zoom_restore(Plane *p)
 }
 
 void
-zoom_handle(Plane *p, float factor)
+zoom_handle(struct Plane *p, float factor)
 {
     float xctr = (p->xmin + p->ymax) / 2.0f;
     float yctr = (p->ymin + p->ymax) / 2.0f;
@@ -54,14 +59,14 @@ zoom_handle(Plane *p, float factor)
 }
 
 void
-get_step(const Plane *p, float *xstep, float *ystep)
+get_step(const struct Plane *p, float *xstep, float *ystep)
 {
     *xstep = (p->xmax - p->xmin) / (p->xmaxs + 1.0f);
     *ystep = (p->ymax - p->ymin) / (p->ymaxs + 1.0f);
 }
 
 void
-axes_draw(const Plane *p)
+axes_draw(const struct Plane *p)
 {
     int i;
     float x0 = plane_scale(0.0f, p->xmin, p->xmax, 0.0f, p->xmaxs);
@@ -84,7 +89,7 @@ axes_draw(const Plane *p)
 }
 
 void
-graph_draw(const Plane *p)
+graph_draw(const struct Plane *p)
 {
     float x, xstep, ystep;
     get_step(p, &xstep, &ystep);
@@ -98,7 +103,7 @@ graph_draw(const Plane *p)
 }
 
 void
-graph_plot(const Plane *p, float x, float y)
+graph_plot(const struct Plane *p, float x, float y)
 {
     float xp = plane_scale(x, p->xmin, p->xmax, 0.0f, p->xmaxs);
     float yp = plane_scale(y, p->ymin, p->ymax, p->ymaxs, 0.0f);

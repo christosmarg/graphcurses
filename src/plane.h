@@ -17,24 +17,21 @@
 #define ZOOM_IN_FACTOR  (1.0f / 1.05f)
 #define ZOOM_OUT_FACTOR  1.05f
 
-typedef struct {
+struct Plane {
     float (*yfunc)(float x);
-    float ymin, ymax;
-    float xmin, xmax;
-    float xscale, yscale;
-    int   ymaxs, xmaxs;
-} Plane;
+    float  ymin, ymax;
+    float  xmin, xmax;
+    float  xscale, yscale;
+    int    ymaxs, xmaxs;
+};
 
-extern Plane p;
+extern struct Plane p;
 
-extern void  plane_init(Plane *p);
-extern float plane_scale(float val, float omin, float omax, float nmin, float nmax);
-extern void  plane_shift(Plane *p, float xshift, float yshift);
-extern void  zoom_restore(Plane *p);
-extern void  zoom_handle(Plane *p, float factor);
-extern void  get_step(const Plane *p, float *xstep, float *ystep);
-extern void  axes_draw(const Plane *p);
-extern void  graph_draw(const Plane *p);
-extern void  graph_plot(const Plane *p, float x, float y);
+extern void  plane_init(struct Plane *p);
+extern void  plane_shift(struct Plane *p, float xshift, float yshift);
+extern void  zoom_restore(struct Plane *p);
+extern void  zoom_handle(struct Plane *p, float factor);
+extern void  axes_draw(const struct Plane *p);
+extern void  graph_draw(const struct Plane *p);
 
 #endif /* PLANE_H */
