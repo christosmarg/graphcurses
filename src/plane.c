@@ -1,9 +1,8 @@
 #include "plane.h"
 
-static float plane_scale(float val, float omin, float omax,
-                         float nmin, float nmax);
-static void  get_step(const struct Plane *p, float *xstep, float *ystep);
-static void  graph_plot(const struct Plane *p, float x, float y);
+static float plane_scale(float, float, float, float, float);
+static void  get_step(const struct Plane *, float *, float *);
+static void  graph_plot(const struct Plane *, float, float);
 
 void
 plane_init(struct Plane *p)
@@ -73,14 +72,12 @@ axes_draw(const struct Plane *p)
     float y0 = plane_scale(0.0f, p->ymin, p->ymax, p->ymaxs, 0.0f);
     float xstep, ystep;
     get_step(p, &xstep, &ystep);
-    for (i = 0; i < p->xmaxs; i++)
-    {
+    for (i = 0; i < p->xmaxs; i++) {
         float plotx = p->xmin + xstep * i;
         int tick = fabs(fmod(plotx, p->xscale)) < xstep;
         mvaddch(y0, i, tick ? ACS_PLUS : ACS_HLINE);
     }
-    for (i = 0; i < p->ymaxs; i++)
-    {
+    for (i = 0; i < p->ymaxs; i++) {
         float ploty = p->ymin + ystep * i;
         int tick = fabs(fmod(ploty, p->yscale)) < ystep;
         mvaddch(i, x0, tick ? ACS_PLUS : ACS_VLINE);
@@ -94,8 +91,7 @@ graph_draw(const struct Plane *p)
     float x, xstep, ystep;
     get_step(p, &xstep, &ystep);
     attron(COLOR_PAIR(2));
-    for (x = p->xmin; x <= p->xmax; x += xstep)
-    {
+    for (x = p->xmin; x <= p->xmax; x += xstep) {
         float y = p->yfunc(x);
         graph_plot(p, x, y);
     }

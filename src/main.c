@@ -5,10 +5,10 @@
 static void  *f = NULL;
 
 static void  curses_init(void);
-static void  func_get(struct Plane *p, char *buf);
-static void  expression_validate(struct Plane *p);
-static float expression_evaluate(float x);
-static void  keys_handle(struct Plane *p, int key);
+static void  func_get(struct Plane *, char *);
+static void  expression_validate(struct Plane *);
+static float expression_evaluate(float);
+static void  keys_handle(struct Plane *, int);
 
 int
 main(int argc, char **argv)
@@ -24,9 +24,7 @@ main(int argc, char **argv)
     expression_validate(&p);
     p.yfunc = expression_evaluate;
 
-    int key = 0;
-    while (key != 'q')
-    {
+    for (key = 0; key != 'q'; key = getch()) {
         attron(COLOR_PAIR(1));
         keys_handle(&p, key);
         erase();
@@ -39,7 +37,6 @@ main(int argc, char **argv)
         attroff(COLOR_PAIR(1));
         graph_draw(&p);
         refresh();
-        key = getch();
     }
     
     endwin();
@@ -79,8 +76,7 @@ expression_validate(struct Plane *p)
 {
     char *buf = (char *)malloc(BUFFSIZE + sizeof(char));
     func_get(p, buf);
-    while (!(f = evaluator_create(buf)))
-    {
+    while (!(f = evaluator_create(buf))) {
         printw("Error in expression! Try again");
         func_get(p, buf);
         refresh();
@@ -97,8 +93,7 @@ expression_evaluate(float x)
 void
 keys_handle(struct Plane *p, int key)
 {
-    switch (key)
-    {
+    switch (key) {
         case 'k': case KEY_UP:    plane_shift(p, 0.0f,  SHIFT_STEP); break;
         case 'j': case KEY_DOWN:  plane_shift(p, 0.0f, -SHIFT_STEP); break;
         case 'h': case KEY_LEFT:  plane_shift(p, -SHIFT_STEP, 0.0f); break;

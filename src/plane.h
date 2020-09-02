@@ -18,7 +18,7 @@
 #define ZOOM_OUT_FACTOR  1.05f
 
 struct Plane {
-    float (*yfunc)(float x);
+    float (*yfunc)(float);
     float  ymin, ymax;
     float  xmin, xmax;
     float  xscale, yscale;
@@ -27,11 +27,11 @@ struct Plane {
 
 extern struct Plane p;
 
-extern void  plane_init(struct Plane *p);
-extern void  plane_shift(struct Plane *p, float xshift, float yshift);
-extern void  zoom_restore(struct Plane *p);
-extern void  zoom_handle(struct Plane *p, float factor);
-extern void  axes_draw(const struct Plane *p);
-extern void  graph_draw(const struct Plane *p);
+extern void  plane_init(struct Plane *);
+extern void  plane_shift(struct Plane *, float, float);
+extern void  zoom_restore(struct Plane *);
+extern void  zoom_handle(struct Plane *, float);
+extern void  axes_draw(const struct Plane *);
+extern void  graph_draw(const struct Plane *);
 
 #endif /* PLANE_H */
