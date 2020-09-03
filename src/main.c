@@ -24,7 +24,8 @@ main(int argc, char **argv)
     expression_validate(&p);
     p.yfunc = expression_evaluate;
 
-    for (key = 0; key != 'q'; key = getch()) {
+    int key = 0;
+    for (; key != 'q'; key = getch()) {
         attron(COLOR_PAIR(1));
         keys_handle(&p, key);
         erase();
