@@ -29,8 +29,8 @@ The binary will be installed at `/usr/local/bin/`
 
 * Improve key handling
 * Add slope, curvature etc.
-* Add an options window
+* ~~Add an options window~~
 * Add coordinates using cursor pointing
-* *(Perhaps)* add derivative calculator
+* ~~Add derivative calculator~~
 * Fix axes plotting bug
 * Add point numbering on axes
