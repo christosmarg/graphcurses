@@ -248,7 +248,7 @@ int
 main(int argc, char **argv)
 {
 #ifndef NCURSES_VERSION
-    fprintf(stderr, "ncurses is needed in order to run this program.\n");
+    fputs("ncurses is needed in order to run this program.\n", stderr);
     return EXIT_FAILURE;
 #endif /* NCURSES_VERSION */
     curses_init();

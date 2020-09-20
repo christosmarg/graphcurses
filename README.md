@@ -27,7 +27,7 @@ The binary will be installed at `/usr/local/bin/`
 
 ## To Do
 
-* Improve key handling
+* ~~Improve key handling~~
 * Add slope, curvature etc.
 * ~~Add an options window~~
 * Add coordinates using cursor pointing
