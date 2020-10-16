@@ -1,20 +1,22 @@
+# See LICENSE file for copyright and license details.
+
 BIN = graphcurses
 VERSION = 0.1
 DIST = ${BIN}-${VERSION}
 MAN1 = ${BIN}.1
 PREFIX = /usr/local
 MAN_DIR = ${PREFIX}/man/man1
-BIN_DIR = ${PREFIX}bin
+BIN_DIR = ${PREFIX}/bin
 
 EXT = c
 SRC = ${wildcard *.${EXT}}
 OBJ = ${SRC:%.${EXT}=%.o}
 
 CC = gcc
-CPPFLAGS += -Iinclude -U__STRICT_ANSI__ -DVERSION=\"${VERSION}\"
-CFLAGS += -Wall -std=c99 -pedantic -O3
-LDFLAGS += -Llib
-LDLIBS += -lm -lmatheval -lncurses
+INCS += -Iinclude
+CPPFLAGS += -U__STRICT_ANSI__ -DVERSION=\"${VERSION}\"
+CFLAGS += -Wall -std=c99 -pedantic -O3 ${INCS} ${CPPFLAGS}
+LDFLAGS += -Llib -lm -lmatheval -lncurses
 
 CP = cp -f
 RM = rm -f
@@ -23,13 +25,19 @@ MKDIR = mkdir -p
 TAR = tar -cf
 GZIP = gzip
 
-all: ${BIN}
+all: options ${BIN}
+
+options:
+	@echo ${BIN} build options:
+	@echo "CFLAGS   = ${CFLAGS}"
+	@echo "LDFLAGS  = ${LDFLAGS}"
+	@echo "CC       = ${CC}"
 
 ${BIN}: ${OBJ}
-	${CC} ${LDFLAGS} $^ ${LDLIBS} -o $@
+	${CC} ${LDFLAGS} $^ -o $@
 
 %.o: %.${EXT}
-	${CC} ${CPPFLAGS} ${CFLAGS} -c $< -o $@
+	${CC} ${CFLAGS} -c $< -o $@
 
 dist: clean
 	${MKDIR} ${DIST}
@@ -42,18 +50,19 @@ run:
 	./${BIN}
 
 install: all
-	${MKDIR} ${DESTDIR}${BIN_DIR} ${DESTDIR}${MAN_DIR}
+	#${MKDIR} ${DESTDIR}${BIN_DIR} ${DESTDIR}${MAN_DIR}
+	${MKDIR} ${DESTDIR}${BIN_DIR}
 	${CP} ${BIN} ${BIN_DIR}
-	${CP} ${MAN1} ${DESTDIR}${MAN_DIR}
-	sed "s/VERSION/${VERSION}/g" < ${MAN1} > ${DESTDIR}${MAN_DIR}/${MAN1}
-	chmod 644 ${DESTDIR}${BIN_DIR}/${BIN}
-	chmod 644 ${DESTDIR}${MAN_DIR}/${MAN1}
+	#${CP} ${MAN1} ${DESTDIR}${MAN_DIR}
+	#sed "s/VERSION/${VERSION}/g" < ${MAN1} > ${DESTDIR}${MAN_DIR}/${MAN1}
+	chmod 755 ${DESTDIR}${BIN_DIR}/${BIN}
+	#chmod 644 ${DESTDIR}${MAN_DIR}/${MAN1}
 
-uninstall: all
+uninstall:
 	${RM} ${DESTDIR}${BIN_DIR}/${BIN}
-	${RM} ${DESTDIR}${MAN_DIR}/${MAN1}
+	#${RM} ${DESTDIR}${MAN_DIR}/${MAN1}
 
 clean:
-	${RM} ${OBJ} ${BIN}
+	${RM} ${BIN} ${OBJ} ${DIST}.tar.gz
 
-.PHONY: all clean dist install uninstall run
+.PHONY: all options clean dist install uninstall run

@@ -19,7 +19,6 @@ $ make run
 In order to install do
 ```shell
 $ cd path/to/graphcurses
-$ make
 $ sudo make install
 $ make clean # optional
 ```

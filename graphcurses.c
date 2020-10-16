@@ -1,8 +1,11 @@
+/* See LICENSE file for copyright and license details. */
+
 #include <math.h>
-#include <matheval.h>
-#include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <matheval.h>
+#include <ncurses.h>
 
 #define XMIN_PLANE      (-2.0f * M_PI)
 #define XMAX_PLANE      ( 2.0f * M_PI)
@@ -24,6 +27,18 @@
     xstep = (p->xmax - p->xmin) / (p->xmaxs + 1.0f);                       
 #define PLANE_YSTEP(p, ystep)                                              \
     ystep = (p->xmax - p->ymin) / (p->ymaxs + 1.0f);
+
+#define OPT_QUIT            "q              Quit"
+#define OPT_MOVE_UP         "Up/k           Move up"
+#define OPT_MOVE_DOWN       "Down/j         Move down"
+#define OPT_MOVE_LEFT       "Left/h         Move left"
+#define OPT_MOVE_RIGHT      "Right/l        Move right"
+#define OPT_SHOW_DERIVATIVE "d              Show derivative"
+#define OPT_NEW_FUNCTION    "f              New function"
+#define OPT_RESTORE_ZOOM    "r              Restore zoom"
+#define OPT_ZOOM_IN         "+              Zoom in"
+#define OPT_ZOOM_OUT        "-              Zoom out"
+#define MSG_QUIT_MENU       "Press any key to quit the menu"
 
 struct Plane {
     float (*f)(float);
@@ -231,17 +246,17 @@ menu_options(void)
 void
 menu_fill(WINDOW *opts)
 {
-    mvwprintw(opts, 1,  1, "q              Quit");
-    mvwprintw(opts, 2,  1, "Up/k           Move up");
-    mvwprintw(opts, 3,  1, "Down/j         Move down");
-    mvwprintw(opts, 4,  1, "Left/h         Move left");
-    mvwprintw(opts, 5,  1, "Right/l        Move right");
-    mvwprintw(opts, 6,  1, "d              Show derivative");
-    mvwprintw(opts, 7,  1, "f              New function");
-    mvwprintw(opts, 8,  1, "r              Restore zoom");
-    mvwprintw(opts, 9,  1, "+              Zoom in");
-    mvwprintw(opts, 10, 1, "-              Zoom out");
-    mvwprintw(opts, 12, 1, "Press any key to quit the menu");
+    mvwprintw(opts, 1,  1, OPT_QUIT);
+    mvwprintw(opts, 2,  1, OPT_MOVE_UP);
+    mvwprintw(opts, 3,  1, OPT_MOVE_DOWN);
+    mvwprintw(opts, 4,  1, OPT_MOVE_LEFT);
+    mvwprintw(opts, 5,  1, OPT_MOVE_RIGHT);
+    mvwprintw(opts, 6,  1, OPT_SHOW_DERIVATIVE);
+    mvwprintw(opts, 7,  1, OPT_NEW_FUNCTION);
+    mvwprintw(opts, 8,  1, OPT_RESTORE_ZOOM);
+    mvwprintw(opts, 9,  1, OPT_ZOOM_IN);
+    mvwprintw(opts, 10, 1, OPT_ZOOM_OUT);
+    mvwprintw(opts, 12, 1, MSG_QUIT_MENU);
 }
 
 int
