@@ -7,6 +7,10 @@
 #include <matheval.h>
 #include <ncurses.h>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif /* M_PI */
+
 #define XMIN_PLANE      (-2.0f * M_PI)
 #define XMAX_PLANE      ( 2.0f * M_PI)
 #define YMIN_PLANE      -M_PI
@@ -52,20 +56,20 @@ struct Plane {
 
 static void  *f  = NULL;
 
-static void   curses_init(void);
-static void   func_get(struct Plane *, char *);
-static void   expression_validate(struct Plane *);
-static float  expression_evaluate(float);
-static void   keys_handle(struct Plane *, int);
-static void   plane_init(struct Plane *);
-static void   plane_shift(struct Plane *, float, float);
-static void   zoom_restore(struct Plane *);
-static void   zoom_handle(struct Plane *, float);
-static void   axes_draw(const struct Plane *);
-static void   graph_draw(const struct Plane *);
-static void   graph_plot(const struct Plane *, float, float);
-static void   menu_options(void);
-static void   menu_fill(struct _win_st *);
+static void     curses_init(void);
+static void     func_get(struct Plane *, char *);
+static void     expression_validate(struct Plane *);
+static float    expression_evaluate(float);
+static void     keys_handle(struct Plane *, int);
+static void     plane_init(struct Plane *);
+static void     plane_shift(struct Plane *, float, float);
+static void     zoom_restore(struct Plane *);
+static void     zoom_handle(struct Plane *, float);
+static void     axes_draw(const struct Plane *);
+static void     graph_draw(const struct Plane *);
+static void     graph_plot(const struct Plane *, float, float);
+static void     menu_options(void);
+static void     menu_fill(struct _win_st *);
 
 void
 curses_init(void)
@@ -100,7 +104,7 @@ expression_validate(struct Plane *p)
 {
         char *buf;
 
-        if ((buf = (char *)malloc(BUFFSIZE + sizeof(char))) == NULL) {
+        if ((buf = malloc(BUFFSIZE + sizeof(char))) == NULL) {
                 fputs("Cannot allocate memory. Exiting. . .\n", stderr);
                 exit(EXIT_FAILURE);
         }
@@ -294,7 +298,7 @@ menu_fill(WINDOW *opts)
 }
 
 int
-main(int argc, char **argv)
+main(int argc, char *argv[])
 {
 #ifndef NCURSES_VERSION
         fputs("ncurses is needed in order to run this program.\n", stderr);

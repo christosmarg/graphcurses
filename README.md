@@ -7,22 +7,18 @@ A simple ncurses graph generator.
 ## Dependencies
 
 * `ncurses` 
-* `matheval`
+* `libmatheval`
 
 ## Usage
 
 ```shell
 $ cd path/to/graphcurses
-$ make
-$ make run
-```
-In order to install do
-```shell
-$ cd path/to/graphcurses
-$ sudo make install
+$ make && make run
 $ make clean # optional
 ```
-The binary will be installed at `/usr/local/bin/`
+
+You can install `graphcurses` by running `sudo make install clean`.
+The binary will be installed at `/usr/local/bin`
 
 ## To Do
 
