@@ -1,0 +1,47 @@
+.Dd graphcurses\-VERSION
+.Dt GRAPHCURSES 1
+.Os
+.Sh NAME
+.Nm graphcurses
+.Nd ncurses 2D graph generator
+.Sh SYNOPSIS
+.Nm
+.Sh DESCRIPTION
+.Nm
+takes a function as an input and draws it using
+.Xr ncurses 3
+to draw the TUI. Functions and derivatives are evaluated by
+.Xr libmatheval 3
+and might use
+.Xr math 3
+to calculate more complicated functions.
+.Sh OPTIONS
+The following options are used during runtime in the TUI,
+not the command line.
+.Bl -tag -width 8n
+.It Sy q
+quit program.
+.It Sy UP/k
+move up on the Y axis
+.It Sy DOWN/j
+move down on the Y axis
+.It Sy LEFT/h
+move left on the X axis
+.It Sy RIGHT/l
+move right on the X axis
+.It Sy d
+calculate and show the derivative of the displayed function
+.It Sy f
+give the program a new function to calculate and plot
+.It Sy r
+reset zooming to default
+.It Sy +
+zoom in
+.It Sy -
+zoom out
+.Sh SEE ALSO
+.Xr ncurses 3 ,
+.Xr libmatheval 3 ,
+.Xr math 3
+.Sh AUTHORS
+.An Christos Margiolis Aq Mt christos@christosmarg.xyz
