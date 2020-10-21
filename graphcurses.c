@@ -259,7 +259,7 @@ graph_plot(const struct Plane *p, float x, float y)
 void
 menu_options(void)
 {
-        int w, h, wy, wh;
+        int w, h, wy, wx;
         WINDOW *opts;
 
         w  = 33;
