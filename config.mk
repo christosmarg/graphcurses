@@ -6,10 +6,6 @@ VERSION = 0
 PREFIX = /usr/local
 MAN_DIR = ${PREFIX}/man/man1
 BIN_DIR = ${PREFIX}/bin
-# uncomment if you're making a library
-#MAN_DIR = ${PREFIX}/man/man3
-#INC_DIR = ${PREFIX}/include
-#LIB_DIR = ${PREFIX}/lib
 
 # includes and libs
 INCS = -Iinclude 
@@ -17,12 +13,10 @@ LIBS = -Llib -lm -lmatheval -lncurses
 
 # flags
 CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=200809L \
-	   -DVERSION=\"${VERSION}\" -U__STRICT_ANSI__
+	   -D_XOPEN_SOURCE=600 -DVERSION=\"${VERSION}\" -U__STRICT_ANSI__
 CFLAGS = -std=c99 -pedantic -Wall -Wno-deprecated-declarations \
 	 -O3 ${INCS} ${CPPFLAGS}
 LDFLAGS = ${LIBS}
-# uncomment if you're making a library
-#ARFLAGS = rs
 
 # utils
 CP = cp -f
@@ -36,5 +30,3 @@ GZIP = gzip
 
 # compiler
 CC = gcc
-# uncomment if you're making a library
-#AR = ar

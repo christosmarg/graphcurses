@@ -1,5 +1,4 @@
 /* See LICENSE file for copyright and license details. */
-
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,17 +12,17 @@
 
 #define XMIN_PLANE      (-2.0f * M_PI)
 #define XMAX_PLANE      ( 2.0f * M_PI)
-#define YMIN_PLANE      -M_PI
+#define YMIN_PLANE      (-M_PI)
 #define YMAX_PLANE       M_PI
 #define XSCALE_PLANE     1.0f
 #define YSCALE_PLANE     1.0f
 #define SHIFT_STEP       1.0f
 #define ZOOM_IN_FACTOR  (1.0f / 1.05f)
 #define ZOOM_OUT_FACTOR  1.05f
-#define BUFFSIZE         256
+#define BUFSIZE          256
 
-#define YMAX()          (getmaxy(stdscr))
-#define XMAX()          (getmaxx(stdscr))
+#define YMAX            (getmaxy(stdscr))
+#define XMAX            (getmaxx(stdscr))
 #define CENTER(x, y)    ((x) / 2 - (y) / 2)
 #define PLANE_SCALE(val, omin, omax, nmin, nmax)                              \
         ((((val) - (omin)) / ((omax) - (omin))) * ((nmax) - (nmin)) + (nmin))
@@ -44,160 +43,135 @@
 #define OPT_ZOOM_OUT        "-              Zoom out"
 #define MSG_QUIT_MENU       "Press any key to quit the menu"
 
-struct Plane {
+typedef struct {
         float   (*f)(float);
         void    *df;
-        float    ymin, ymax;
-        float    xmin, xmax;
-        float    xscale, yscale;
-        int      ymaxs, xmaxs;
-        int      derivative_show;
-};
+        float    ymin;
+        float    ymax;
+        float    xmin;
+        float    xmax;
+        float    xscale;
+        float    yscale;
+        int      ymaxs;
+        int      xmaxs;
+        int      derivshow;
+} Plane;
 
-static void  *f  = NULL;
+static void     cursesinit(void);
+static void     funcget(Plane *, char *);
+static void     exprvalidate(Plane *);
+static float    expreval(float);
+static Plane   *planeinit(void);
+static void     planeshift(Plane *, float, float);
+static void     zoomrestore(Plane *);
+static void     zoomhandle(Plane *, float);
+static void     axesdraw(const Plane *);
+static void     graphdraw(const Plane *);
+static void     graphplot(const Plane *, float, float);
+static void     menuopts(void);
 
-static void     curses_init(void);
-static void     func_get(struct Plane *, char *);
-static void     expression_validate(struct Plane *);
-static float    expression_evaluate(float);
-static void     keys_handle(struct Plane *, int);
-static void     plane_init(struct Plane *);
-static void     plane_shift(struct Plane *, float, float);
-static void     zoom_restore(struct Plane *);
-static void     zoom_handle(struct Plane *, float);
-static void     axes_draw(const struct Plane *);
-static void     graph_draw(const struct Plane *);
-static void     graph_plot(const struct Plane *, float, float);
-static void     menu_options(void);
-static void     menu_fill(struct _win_st *);
+static void *f  = NULL;
 
-void
-curses_init(void)
+static void
+cursesinit(void)
 {
-        initscr();
+        if (!initscr()) {
+                fputs("graphcurses: initscr: cannot initialiaze ncurses", stderr);
+                exit(EXIT_FAILURE);
+        }
         cbreak();
         noecho();
         curs_set(0);
         keypad(stdscr, 1);
+
         start_color();
         init_pair(1, COLOR_WHITE, COLOR_BLACK);
-        init_pair(2, COLOR_CYAN,  COLOR_BLACK);
-        init_pair(3, COLOR_RED,   COLOR_BLACK);
+        init_pair(2, COLOR_CYAN, COLOR_BLACK);
+        init_pair(3, COLOR_RED, COLOR_BLACK);
 }
 
-void
-func_get(struct Plane *p, char *buf)
+static void
+funcget(Plane *p, char *buf)
 {
         move(0, 0);
         clrtoeol();
         printw("f(x) = ");
         echo();
         refresh();
-        getnstr(buf, BUFFSIZE);
-        zoom_restore(p);
+        getnstr(buf, BUFSIZE);
+        zoomrestore(p);
         refresh();
         noecho();
 }
 
-void
-expression_validate(struct Plane *p)
+static void
+exprvalidate(Plane *p)
 {
         char *buf;
 
-        if ((buf = malloc(BUFFSIZE + sizeof(char))) == NULL) {
-                fputs("Cannot allocate memory. Exiting. . .\n", stderr);
+        if ((buf = malloc(BUFSIZE)) == NULL) {
+                fputs("graphcurses: exprvalidate: cannot allocate memory", stderr);
                 exit(EXIT_FAILURE);
         }
-        func_get(p, buf);
+        funcget(p, buf);
         while (!(f = evaluator_create(buf))) {
                 printw("Error in expression! Try again");
-                func_get(p, buf);
+                funcget(p, buf);
                 refresh();
         }
         p->df = evaluator_derivative_x(f);
         free(buf);
 }
 
-float
-expression_evaluate(float x)
+static float
+expreval(float x)
 {
         return evaluator_evaluate_x(f, x);
 }
 
-void
-keys_handle(struct Plane *p, int key)
+static Plane *
+planeinit(void)
 {
-        switch (key) {
-        case 'k': case KEY_UP:
-                plane_shift(p, 0.0f,  SHIFT_STEP);
-                break;
-        case 'j': case KEY_DOWN:
-                plane_shift(p, 0.0f, -SHIFT_STEP);
-                break;
-        case 'h': case KEY_LEFT:
-                plane_shift(p, -SHIFT_STEP, 0.0f);
-                break;
-        case 'l': case KEY_RIGHT:
-                plane_shift(p,  SHIFT_STEP, 0.0f);
-                break;
-        case '+':
-                zoom_handle(p, ZOOM_IN_FACTOR);
-                break;
-        case '-':
-                zoom_handle(p, ZOOM_OUT_FACTOR);
-                break;
-        case 'd':
-                p->derivative_show = !p->derivative_show;
-                break;
-        case 'r':
-                zoom_restore(p);
-                break;
-        case 'f':
-                expression_validate(p);
-                break;
-        case 'm':
-                menu_options();
-                break;
+        Plane *p;
+
+        if ((p = malloc(sizeof(Plane))) == NULL) {
+                fputs("graphcurses: planeinit: cannot allocate memory", stderr);
+                exit(EXIT_FAILURE);
         }
+
+        p->xmaxs = XMAX;
+        p->ymaxs = YMAX;
+        p->derivshow = 0;
+        p->f = expreval;
+        zoomrestore(p);
+
+        return p;
 }
 
-void
-plane_init(struct Plane *p)
+static void
+planeshift(Plane *p, float xshift, float yshift)
 {
-        p->xmin   = XMIN_PLANE;
-        p->xmax   = XMAX_PLANE;
-        p->ymin   = YMIN_PLANE;
-        p->ymax   = YMAX_PLANE;
-        p->xscale = XSCALE_PLANE;
-        p->yscale = YSCALE_PLANE;
-        p->xmaxs  = XMAX();
-        p->ymaxs  = YMAX();
-}
-
-void
-plane_shift(struct Plane *p, float xshift, float yshift)
-{
-        xshift  *= (p->xmax - p->xmin) / 16.0f;
-        yshift  *= (p->ymax - p->ymin) / 16.0f;
+        xshift *= (p->xmax - p->xmin) / 16.0f;
+        yshift *= (p->ymax - p->ymin) / 16.0f;
         p->xmin += xshift;
         p->xmax += xshift;
         p->ymin += yshift;
         p->ymax += yshift;
 }
 
-void
-zoom_restore(struct Plane *p)
+static void
+zoomrestore(Plane *p)
 {
-        p->xmin   = XMIN_PLANE;
-        p->xmax   = XMAX_PLANE;
-        p->ymin   = YMIN_PLANE;
-        p->ymax   = YMAX_PLANE;
+        p->xmin = XMIN_PLANE;
+        p->xmax = XMAX_PLANE;
+        p->ymin = YMIN_PLANE;
+        p->ymax = YMAX_PLANE;
         p->xscale = XSCALE_PLANE;
         p->yscale = YSCALE_PLANE;
 }
 
-void
-zoom_handle(struct Plane *p, float factor)
+static void
+zoomhandle(Plane *p, float factor)
 {
         float xctr = (p->xmin + p->ymax) / 2.0f;
         float yctr = (p->ymin + p->ymax) / 2.0f;
@@ -208,8 +182,8 @@ zoom_handle(struct Plane *p, float factor)
         p->ymax = PLANE_SCALE(factor, 1.0f, 0.0f, p->ymax, yctr);  
 }
 
-void
-axes_draw(const struct Plane *p)
+static void
+axesdraw(const Plane *p)
 {
         float x0, y0, xstep, ystep, plotx, ploty, i;
         int tick;
@@ -218,6 +192,7 @@ axes_draw(const struct Plane *p)
         y0 = PLANE_SCALE(0.0f, p->ymin, p->ymax, p->ymaxs, 0.0f);
         PLANE_XSTEP(p, xstep);
         PLANE_YSTEP(p, ystep);
+
         for (i = 0.0f; i < p->xmaxs; i += xstep) {
                 plotx = p->xmin + xstep * i;
                 tick = fabs(fmod(plotx, p->xscale)) < xstep;
@@ -228,11 +203,12 @@ axes_draw(const struct Plane *p)
                 tick = fabs(fmod(ploty, p->yscale)) < ystep;
                 mvaddch(i, x0, tick ? ACS_PLUS : ACS_VLINE);
         }
+
         mvaddch(y0, x0, ACS_PLUS);
 }
 
-void
-graph_draw(const struct Plane *p)
+static void
+graphdraw(const Plane *p)
 {
         float x, y, dy, xstep;
 
@@ -240,19 +216,18 @@ graph_draw(const struct Plane *p)
         for (x = p->xmin; x <= p->xmax; x += xstep) {
                 y = p->f(x);
                 attron(COLOR_PAIR(2));
-                graph_plot(p, x, y);
-                if (p->derivative_show) {
+                graphplot(p, x, y);
+                if (p->derivshow) {
                         dy = evaluator_evaluate_x(p->df, x);
                         attron(COLOR_PAIR(3));
-                        graph_plot(p, x, dy);
+                        graphplot(p, x, dy);
                 }
         }
-        attroff(COLOR_PAIR(3));
-        attroff(COLOR_PAIR(2));
+        attroff(COLOR_PAIR(2) | COLOR_PAIR(3));
 }
 
-void
-graph_plot(const struct Plane *p, float x, float y)
+static void
+graphplot(const Plane *p, float x, float y)
 {
         float xp = PLANE_SCALE(x, p->xmin, p->xmax, 0.0f, p->xmaxs);
         float yp = PLANE_SCALE(y, p->ymin, p->ymax, p->ymaxs, 0.0f);
@@ -260,30 +235,21 @@ graph_plot(const struct Plane *p, float x, float y)
         mvaddch(yp, xp, '.');
 }
 
-void
-menu_options(void)
+static void
+menuopts(void)
 {
-        int w, h, wy, wx;
         WINDOW *opts;
+        int w, h, wy, wx;
 
-        w  = 33;
+        w = 33;
         h = 14;
-        wy = CENTER(YMAX(), h);
-        wx = CENTER(XMAX(), w);
+        wy = CENTER(YMAX, h);
+        wx = CENTER(XMAX, w);
         opts = newwin(h, w, wy, wx);
         werase(opts);
         box(opts, 0, 0);
-        menu_fill(opts);
-        wrefresh(opts);
-        wgetch(opts);
-        werase(opts);
-        wrefresh(opts);
-        delwin(opts);
-}
 
-void
-menu_fill(WINDOW *opts)
-{
+        /* fill menu */
         mvwprintw(opts, 1,  1, OPT_QUIT);
         mvwprintw(opts, 2,  1, OPT_MOVE_UP);
         mvwprintw(opts, 3,  1, OPT_MOVE_DOWN);
@@ -295,43 +261,78 @@ menu_fill(WINDOW *opts)
         mvwprintw(opts, 9,  1, OPT_ZOOM_IN);
         mvwprintw(opts, 10, 1, OPT_ZOOM_OUT);
         mvwprintw(opts, 12, 1, MSG_QUIT_MENU);
+
+        wrefresh(opts);
+        wgetch(opts);
+        werase(opts);
+        wrefresh(opts);
+        delwin(opts);
 }
 
 int
 main(int argc, char *argv[])
 {
-#ifndef NCURSES_VERSION
-        fputs("ncurses is needed in order to run this program.\n", stderr);
-        return EXIT_FAILURE;
-#endif /* NCURSES_VERSION */
-        struct Plane p;
+        /* TODO: implement `die` */
+        Plane *p;
         int key = 0;
 
-        curses_init();
-        plane_init(&p);
-        zoom_restore(&p);
-        expression_validate(&p);
-        p.derivative_show = 0;
-        p.f = expression_evaluate;
+        cursesinit();
+        p = planeinit();
+        exprvalidate(p);
 
         for (; key != 'q'; key = getch()) {
-                keys_handle(&p, key);
+                switch (key) {
+                case 'k':       /* FALLTHROUGH */
+                case KEY_UP:
+                        planeshift(p, 0.0f,  SHIFT_STEP);
+                        break;
+                case 'j':       /* FALLTHROUGH */
+                case KEY_DOWN:
+                        planeshift(p, 0.0f, -SHIFT_STEP);
+                        break;
+                case 'h':       /* FALLTHROUGH */
+                case KEY_LEFT:
+                        planeshift(p, -SHIFT_STEP, 0.0f);
+                        break;
+                case 'l':       /* FALLTHROUGH */
+                case KEY_RIGHT:
+                        planeshift(p,  SHIFT_STEP, 0.0f);
+                        break;
+                case '+':
+                        zoomhandle(p, ZOOM_IN_FACTOR);
+                        break;
+                case '-':
+                        zoomhandle(p, ZOOM_OUT_FACTOR);
+                        break;
+                case 'd':
+                        p->derivshow ^= 1;
+                        break;
+                case 'r':
+                        zoomrestore(p);
+                        break;
+                case 'f':
+                        exprvalidate(p);
+                        break;
+                case 'm':
+                        menuopts();
+                        break;
+                }
+
                 erase();
-                attron(COLOR_PAIR(1));
-                attron(A_REVERSE);
-                attron(A_BOLD);
+                attron(COLOR_PAIR(1) | A_REVERSE | A_BOLD);
                 mvprintw(0, 0, "f(x) = %s", evaluator_get_string(f));
-                if (p.derivative_show)
-                    mvprintw(1, 0, "f'(x) = %s", evaluator_get_string(p.df));
-                attroff(A_REVERSE);
-                attroff(A_BOLD);
-                axes_draw(&p);
-                attroff(COLOR_PAIR(1));
-                graph_draw(&p);
+                if (p->derivshow)
+                        mvprintw(1, 0, "f'(x) = %s", evaluator_get_string(p->df));
+                attroff(COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+
+                axesdraw(p);
+                graphdraw(p);
                 refresh();
         }
         
         endwin();
+        free(p);
         evaluator_destroy(f);   
+
         return EXIT_SUCCESS;
 }

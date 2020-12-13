@@ -2,7 +2,7 @@
 
 A simple ncurses graph generator.
 
-![Screenshot_20200308_212613](https://user-images.githubusercontent.com/54286563/76169715-b3994d80-6183-11ea-97e0-4003239ecfe3.png)
+![preview](https://user-images.githubusercontent.com/54286563/102025554-66e14380-3da1-11eb-81e0-ea7cfc8c1161.png)
 
 ## Dependencies
 
@@ -22,10 +22,7 @@ The binary will be installed at `/usr/local/bin`
 
 ## To Do
 
-* ~~Improve key handling~~
 * Add slope, curvature etc.
-* ~~Add an options window~~
-* Add coordinates using cursor pointing
-* ~~Add derivative calculator~~
+* Add curses coordinates
 * Fix axes plotting bug
 * Add point numbering on axes

@@ -8,8 +8,9 @@ BIN = graphcurses
 DIST = ${BIN}-${VERSION}
 MAN1 = ${BIN}.1
 
+EXT = c
 SRC = graphcurses.c
-OBJ = graphcurses.o
+OBJ = ${SRC:.${EXT}=.o}
 
 all: options ${BIN}
 
@@ -22,12 +23,12 @@ options:
 ${BIN}: ${OBJ}
 	${CC} ${LDFLAGS} ${OBJ} -o $@
 
-${OBJ}: ${SRC}
-	${CC} ${CFLAGS} -c ${SRC} -o $@
+.${EXT}.o:
+	${CC} -c ${CFLAGS} $<
 
 dist: clean
 	${MKDIR} ${DIST}
-	${CP} -R config.mk ${SRC} LICENSE Makefile README.md ${DIST}
+	${CP} -R config.mk ${MAN1} ${SRC} LICENSE Makefile README.md ${DIST}
 	${TAR} ${DIST}.tar ${DIST}
 	${GZIP} ${DIST}.tar
 	${RM_DIR} ${DIST}
