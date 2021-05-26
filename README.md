@@ -1,12 +1,12 @@
 # graphcurses
 
-A simple ncurses graph generator.
+A simple curses graph generator.
 
 ![preview](https://user-images.githubusercontent.com/54286563/102025554-66e14380-3da1-11eb-81e0-ea7cfc8c1161.png)
 
 ## Dependencies
 
-* `ncurses` 
+* `curses` 
 * `libmatheval`
 
 ## Usage
