@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include <err.h>
+#include <locale.h>
 #include <math.h>
 #include <signal.h>
 #include <stdio.h>
@@ -16,7 +17,6 @@
 #define SIGWINCH 28
 #endif /* SIGWINCH */
 #define SHIFT_STEP 1.0f
-#define BUFSIZE 256
 
 #define YMAX (getmaxy(stdscr))
 #define XMAX (getmaxx(stdscr))
@@ -66,7 +66,7 @@ static void cleanup(void);
 static struct plane *p;
 static void *f = NULL;
 static int colors[] = {
-	[C_FG] = COLOR_BLUE,
+	[C_FG] = COLOR_WHITE,
 	[C_F] = COLOR_YELLOW,
 	[C_DF] = COLOR_MAGENTA,
 };
@@ -91,7 +91,6 @@ cursesinit(void)
 
 	memset(&sa, 0, sizeof(sa));
 	sa.sa_handler = sighandler;
-	sa.sa_flags = SA_RESTART;
 	sigemptyset(&sa.sa_mask);
 	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGTERM, &sa, NULL);
@@ -101,10 +100,8 @@ cursesinit(void)
 static void
 exprvalidate(void)
 {
-	char *buf;
+	char buf[BUFSIZ];
 
-	if ((buf = malloc(BUFSIZE)) == NULL)
-		err(1, "malloc");
 	attron(COLOR_PAIR(C_FG));
 	for (;;) {
 		move(0, 0);
@@ -112,12 +109,12 @@ exprvalidate(void)
 		printw("f(x) = ");
 		echo();
 		refresh();
-		if (getnstr(buf, BUFSIZE) == ERR)
+		if (getnstr(buf, sizeof(buf)) == ERR)
 			continue;
 		zoomrestore();
 		refresh();
 		noecho();
-		if (!(f = evaluator_create(buf)))
+		if ((f = evaluator_create(buf)) == NULL)
 			printw("Error in expression! Try again");
 		else
 			break;
@@ -125,13 +122,12 @@ exprvalidate(void)
 	}
 	attroff(COLOR_PAIR(C_FG));
 	p->df = evaluator_derivative_x(f);
-	free(buf);
 }
 
 static float
 expreval(float x)
 {
-	return evaluator_evaluate_x(f, x);
+	return (evaluator_evaluate_x(f, x));
 }
 
 static void
@@ -286,7 +282,7 @@ sighandler(int sig)
 static void
 cleanup(void)
 {
-	endwin();
+	(void)endwin();
 	evaluator_destroy(f);
 	free(p);
 }
@@ -296,6 +292,7 @@ main(int argc, char *argv[])
 {
 	int key = 0;
 
+	(void)setlocale(LC_ALL, "");
 	cursesinit();
 	planeinit();
 	exprvalidate();
@@ -351,5 +348,5 @@ main(int argc, char *argv[])
 	}
 	cleanup();
 
-	return 0;
+	return (0);
 }

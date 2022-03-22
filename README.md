@@ -11,13 +11,12 @@ A simple curses graph generator.
 
 ## Usage
 
-```shell
-$ cd path/to/graphcurses
+```
 $ make && make run
 $ make clean # optional
 ```
 
-You can install `graphcurses` by running `sudo make install clean`.
+You can install `graphcurses` by running `make install`.
 The binary will be installed at `/usr/local/bin`
 
 ## To Do

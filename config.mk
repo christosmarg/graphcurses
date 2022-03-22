@@ -8,7 +8,7 @@ MANPREFIX = ${PREFIX}/share/man
 
 # includes and libs
 INCS = -Iinclude -I${PREFIX}/include
-LIBS = -Llib -L${PREFIX}/lib -lncursesw -lmatheval -lm
+LIBS = -Llib -L${PREFIX}/lib -lcursesw -lmatheval -lm
 
 # flags
 CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=200809L \
